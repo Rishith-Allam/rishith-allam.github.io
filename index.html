@@ -1,34 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rishi Allam Webpage</title>
-    <style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rishi Allam Webpage</title>
+    <script>
+        function changeColor() {
+          document.body.style.backgroundColor = "red";
+        }
+      </script>
+    <style>
+
 
 body {
-                font-family: cursive;
-                margin: 0;
-                padding: 0;
-                background-color: #608f419e;
-            }
+                font-family: cursive;
+                margin: 0;
+                padding: 0;
+                background-color: #608f419e;
+            }
 
 
-    </style>
+
+    </style>
 </head>
 <body>
-    <h1>Week 1</h1>
+    <h1>Week 1</h1>
 <p>Not loving the color scheme right now.</p>
-<img src="mcpepe.png" alt="Ronald" width="200" height="150">
+
+
+<h1>Welcome to my web page</h1>
+    <p>Click the button below to change the background color of the page:</p>
+    <button onclick="changeColor()">Change color</button>
+
 
 <form onSubmit="return false;">
-   Enter your favorite food:
+   Enter your favorite food:
 <input type="text" name="input">
-    <input type="button" value="Enter" onclick="this.form.output.value=' Your favorite food is '+this.form.input.value;">
-    <input type="text" name="output">
+    <input type="button" value="Enter" onclick="this.form.output.value=' Your favorite food is '+this.form.input.value;">
+    <input type="text" name="output">
 </form>
-
-
 </body>
 </html>
