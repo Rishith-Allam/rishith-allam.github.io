@@ -1,44 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rishi Allam Webpage</title>
-    <script>
-        function changeColor() {
-          document.body.style.backgroundColor = "red";
-        }
-      </script>
-    <style>
-
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rishi Allam Webpage</title>
+    <script>
+        function changeColor() {
+          document.body.style.backgroundColor = "red";
+        }
+      </script>
+    <style>
 
 body {
-                font-family: cursive;
-                margin: 0;
-                padding: 0;
-                background-color: #608f419e;
-            }
+                font-family: cursive;
+                margin: 0;
+                padding: 0;
+                background-color: #608f419e;
+            }
 
 
-
-    </style>
+    </style>
 </head>
 <body>
-    <h1>Week 1</h1>
+    <h1>Week 5</h1>
 <p>Not loving the color scheme right now.</p>
 
-
 <h1>Welcome to my web page</h1>
-    <p>Click the button below to change the background color of the page:</p>
-    <button onclick="changeColor()">Change color</button>
-
+    <p>Click the button below to change the background color of the page:</p>
+    <button onclick="changeColor()">Change color</button>
 
 <form onSubmit="return false;">
-   Enter your favorite food:
+   Enter your favorite food:
 <input type="text" name="input">
-    <input type="button" value="Enter" onclick="this.form.output.value=' Your favorite food is '+this.form.input.value;">
-    <input type="text" name="output">
+    <input type="button" value="Enter" onclick="this.form.output.value=' Your favorite food is '+this.form.input.value;">
+    <input type="text" name="output">
 </form>
+
+
+  
+  <h1>To-Do List</h1>
+
+    <form id="add-task-form">
+      <label for="add-task-input">Add Task:</label>
+      <input type="text" id="add-task-input">
+      <button type="submit">Add</button>
+    </form>
+
+    <form id="remove-task-form">
+      <label for="remove-task-input">Remove Task:</label>
+      <input type="text" id="remove-task-input">
+      <button type="submit">Remove</button>
+    </form>
+
+    <button id="clear-list-button">Clear List</button>
+
+    <table id="to-do-list">
+      <thead>
+        <tr>
+          <th>Task</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+    <script>
+      class ToDoList {
+        constructor() {
+          this.tasks = [];
+          this.table = document.getElementById('to-do-list');
+          this.tbody = this.table.querySelector('tbody');
+        }
+
+        addTask(task) {
+          this.tasks.push(task);
+          this.displayList();
+        }
+
+        removeTask(task) {
+          const index = this.tasks.indexOf(task);
+          if (index > -1) {
+            this.tasks.splice(index, 1);
+            this.displayList();
+          }
+        }
+
+        clearList() {
+          this.tasks = [];
+          this.displayList();
+        }
+
+        displayList() {
+          this.tbody.innerHTML = '';
+          this.tasks.forEach(task => {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.innerText = task;
+            tr.appendChild(td);
+            this.tbody.appendChild(tr);
+          });
+        }
+      }
+
+      const myList = new ToDoList();
+
+      const addForm = document.getElementById('add-task-form');
+      addForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const input = document.getElementById('add-task-input');
+        const task = input.value;
+        myList.addTask(task);
+        input.value = '';
+      });
+
+      const removeForm = document.getElementById('remove-task-form');
+      removeForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const input = document.getElementById('remove-task-input');
+        const task = input.value;
+        myList.removeTask(task);
+        input.value = '';
+      });
+
+      const clearButton = document.getElementById('clear-list-button');
+      clearButton.addEventListener('click', () => {
+        myList.clearList();
+      });
+
+      myList.displayList();
+    </script>
 </body>
 </html>
