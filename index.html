@@ -11,6 +11,39 @@
         }
       </script>
     <style>
+     
+     table {
+       border-collapse: collapse;
+       margin: 10px;
+     }
+     th, td {
+       border: 1px solid black;
+       padding: 5px;
+       text-align: center;
+     }
+     th {
+       background-color: #ccc;
+     }
+     td.completed {
+       text-decoration: line-through;
+     }
+     .delete-btn {
+       background-color: red;
+       color: white;
+       border: none;
+       border-radius: 4px;
+       padding: 5px;
+       cursor: pointer;
+     }
+     .add-btn {
+       background-color: green;
+       color: white;
+       border: none;
+       border-radius: 4px;
+       padding: 5px;
+       cursor: pointer;
+     }
+  
 
 body {
                 font-family: cursive;
@@ -19,7 +52,16 @@ body {
                 background-color: #608f419e;
             }
 
+            canvas {
+            border: 1px solid rgb(252, 10, 10);
+        }
 
+        canvas {
+            background: #000;
+            display: block;
+            margin: 0 auto;
+        }
+        
     </style>
 </head>
 <body>
@@ -39,96 +81,103 @@ body {
 
 
   
-  <h1>To-Do List</h1>
+<canvas id="pong" width="800" height="400"></canvas>
 
-    <form id="add-task-form">
-      <label for="add-task-input">Add Task:</label>
-      <input type="text" id="add-task-input">
-      <button type="submit">Add</button>
-    </form>
+<script>
+   
+    const canvas = document.getElementById("pong");
+    const context = canvas.getContext("2d");
 
-    <form id="remove-task-form">
-      <label for="remove-task-input">Remove Task:</label>
-      <input type="text" id="remove-task-input">
-      <button type="submit">Remove</button>
-    </form>
 
-    <button id="clear-list-button">Clear List</button>
+    const netWidth = 4;
+    const netHeight = canvas.height;
+    const paddleWidth = 10;
+    const paddleHeight = 100;
+    const paddleMargin = 70;
+    const ballRadius = 10;
 
-    <table id="to-do-list">
-      <thead>
-        <tr>
-          <th>Task</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+    let paddle1Y = canvas.height / 2 - paddleHeight / 2;
+    let paddle2Y = canvas.height / 2 - paddleHeight / 2;
+    let ballX = canvas.width / 2;
+    let ballY = canvas.height / 2;
+    let ballSpeedX = 2;
+    let ballSpeedY = 2;
 
-    <script>
-      class ToDoList {
-        constructor() {
-          this.tasks = [];
-          this.table = document.getElementById('to-do-list');
-          this.tbody = this.table.querySelector('tbody');
+    
+    function movePaddle(event) {
+        let rect = canvas.getBoundingClientRect();
+        let mouseY = event.clientY - rect.top - paddleHeight / 2;
+
+        if (mouseY >= 0 && mouseY <= canvas.height - paddleHeight) {
+            if (event.target.id === "pong") {
+                paddle1Y = mouseY;
+            } else if (event.target.id === "pong2") {
+                paddle2Y = mouseY;
+            }
+        }
+    }
+
+    canvas.addEventListener("mousemove", movePaddle);
+
+    function update() {
+        ballX += ballSpeedX;
+        ballY += ballSpeedY;
+
+        
+        if (
+            ballX - ballRadius < paddleWidth &&
+            ballY + ballRadius > paddle1Y &&
+            ballY - ballRadius < paddle1Y + paddleHeight
+        ) {
+            ballSpeedX = -ballSpeedX;
+        } else if (
+            ballX + ballRadius > canvas.width - paddleWidth &&
+            ballY + ballRadius > paddle2Y &&
+            ballY - ballRadius < paddle2Y + paddleHeight
+        ) {
+            ballSpeedX = -ballSpeedX;
         }
 
-        addTask(task) {
-          this.tasks.push(task);
-          this.displayList();
+        if (ballY - ballRadius < 0 || ballY + ballRadius > canvas.height) {
+            ballSpeedY = -ballSpeedY;
         }
 
-        removeTask(task) {
-          const index = this.tasks.indexOf(task);
-          if (index > -1) {
-            this.tasks.splice(index, 1);
-            this.displayList();
-          }
-        }
+      
+        context.fillStyle = "#000";
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
-        clearList() {
-          this.tasks = [];
-          this.displayList();
-        }
+        context.fillStyle = "#fff";
+        context.fillRect(
+            canvas.width / 2 - netWidth / 2,
+            0,
+            netWidth,
+            netHeight
+        );
 
-        displayList() {
-          this.tbody.innerHTML = '';
-          this.tasks.forEach(task => {
-            const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            td.innerText = task;
-            tr.appendChild(td);
-            this.tbody.appendChild(tr);
-          });
-        }
-      }
+        context.fillStyle = "#fff";
+        context.fillRect(paddleWidth, paddle1Y, paddleWidth, paddleHeight);
+        context.fillStyle = "#fff";
+        context.fillRect(
+            canvas.width - paddleWidth * 2,
+            paddle2Y,
+            paddleWidth,
+            paddleHeight
+        );
 
-      const myList = new ToDoList();
+        context.beginPath();
+        context.arc(ballX, ballY, ballRadius, 0, Math.PI * 2, false);
+        context.fillStyle = "#fff";
+        context.fill();
+        context.closePath();
+    }
 
-      const addForm = document.getElementById('add-task-form');
-      addForm.addEventListener('submit', event => {
-        event.preventDefault();
-        const input = document.getElementById('add-task-input');
-        const task = input.value;
-        myList.addTask(task);
-        input.value = '';
-      });
+  
+    function gameLoop() {
+        update();
+        requestAnimationFrame(gameLoop);
+    }
 
-      const removeForm = document.getElementById('remove-task-form');
-      removeForm.addEventListener('submit', event => {
-        event.preventDefault();
-        const input = document.getElementById('remove-task-input');
-        const task = input.value;
-        myList.removeTask(task);
-        input.value = '';
-      });
-
-      const clearButton = document.getElementById('clear-list-button');
-      clearButton.addEventListener('click', () => {
-        myList.clearList();
-      });
-
-      myList.displayList();
-    </script>
+    gameLoop();
+</script>
 </body>
 </html>
